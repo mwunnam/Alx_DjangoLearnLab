@@ -1,7 +1,8 @@
-Command
+## Command
+from bookshelf.models import Book
 book = Book.objects.get(id=1)
 book.delete()
 
-Epected output
+## Epected output
 (1, {'bookshelf.Book': 1})
 

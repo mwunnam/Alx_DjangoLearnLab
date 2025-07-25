@@ -10,6 +10,7 @@ class Author(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
+    author = models.ForiegnKey(Author, on_delete=models.CASCADE, related_name='author')
 
 class Library(models.Model):
     name = models.CharField(max_length=100)

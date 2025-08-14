@@ -3,6 +3,18 @@ from .serializers import BookSerializer
 from .models import Book
 
 # Book List View
+class ListView(generics.ListAPIView):
+    pass
+
+class DetailView(generics.RetrieveAPIView):
+    pass
+
+class UpdateView(generics.UpdateAPIView):
+    pass
+
+class DeleteView(generics.DestoryAPIView):
+    pass
+
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer

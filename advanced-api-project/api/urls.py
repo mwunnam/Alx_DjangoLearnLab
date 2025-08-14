@@ -9,7 +9,7 @@ urlpatterns = [
     path('books/<int:pk>/', BookRetrieveUpdateDestroyView.as_view(), name='detail-update-destory'),
     path('books/create/',),
     path('books/update/',),
-    path('books/<int:pk>/',),
+    path('books/delete/<int:pk>/',),
     path('books/<int:pk>/', ),
 ]
 

@@ -1,4 +1,4 @@
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .serializers import BookSerializer
 from .models import Book
@@ -7,6 +7,9 @@ from .models import Book
 class ListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'author'] # Search by title or author
+    ordering_fields = ['published_date'] # Sort by published date
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
@@ -25,12 +28,33 @@ class UpdateView(generics.UpdateAPIView):
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
 
+    def perform_update(self, serializer):
+        title = self.request.data.get('title', '').strip()
+        if Book.objects.filter(title_iexact=title).exclude(pk=self.get_object().pk).exists():
+            raise serializers.ValidationError({"title": "A book with this title already exist"})
+
+        """
+        if book.owner != self.request.user:
+            raise serializers.ValidationError({
+                "permission": "You do not have permission to update this book."
+            })
+        """
+        serializer.save()
+
+
 
 # Create View
 class CreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        title = self.request.data.get('title', '').strip()
+        if Book.objects.filter(title_iexact=title).exists():
+            raise serializers.ValidationError({"title": "A Book with title already exist"})
+
+        serializer.save()
 
 # DeleteView
 class DeleteView(generics.DestroyAPIView):
